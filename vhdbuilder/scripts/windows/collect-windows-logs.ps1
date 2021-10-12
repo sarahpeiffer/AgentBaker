@@ -91,14 +91,29 @@ $EventProviderNames = $EventSession.GetProviderNames()
 if ($EventProviderNames -contains "Microsoft-Windows-Containers-CCG") {
   cp "C:\\windows\\system32\\winevt\\Logs\\Microsoft-Windows-Containers-CCG%4Admin.evtx" "$ENV:TEMP\\Microsoft-Windows-Containers-CCG%4Admin.evtx"
   $paths += "$ENV:TEMP\\Microsoft-Windows-Containers-CCG%4Admin.evtx"
+  #$events=Get-WinEvent -ListLog Microsoft-Windows-Containers-CCG/Admin
+  #if ($events.RecordCount -gt 0) {
+  #  Get-WinEvent -LogName Microsoft-Windows-Containers-CCG/Admin | Select-Object Index, TimeGenerated, EntryType, Message | Sort-Object Index | Export-CSV -Path "$ENV:TEMP\\$($timeStamp)_containers_ccg.csv"
+  #  $paths += "$ENV:TEMP\\$($timeStamp)_containers_ccg.csv"
+  #}
+  #else {
+    Write-Host "There is no Microsoft-Windows-Containers-CCG events"
+  #}
 }
 else {
   Write-Host "Microsoft-Windows-Containers-CCG events are not available"
 }
+
 # Introduced from CCGAKVPlugin v1.1.3
 if ($EventProviderNames -contains "Microsoft-AKSGMSAPlugin") {
-  cp "C:\\windows\\system32\\winevt\\Logs\\Microsoft-AKSGMSAPlugin%4Admin.evtx" "$ENV:TEMP\\Microsoft-AKSGMSAPlugin%4Admin.evtx"
-  $paths += "$ENV:TEMP\\Microsoft-AKSGMSAPlugin%4Admin.evtx"
+  $events=Get-WinEvent -ListLog Microsoft-AKSGMSAPlugin/Admin
+  if ($events.RecordCount -gt 0) {
+    Get-WinEvent -LogName Microsoft-AKSGMSAPlugin/Admin | Select-Object Index, TimeGenerated, EntryType, Message | Sort-Object Index | Export-CSV -Path "$ENV:TEMP\\$($timeStamp)_aksgmsaplugin_admin.csv"
+    $paths += "$ENV:TEMP\\$($timeStamp)_aksgmsaplugin_admin.csv"
+  }
+  else {
+    Write-Host "There is no AKSGMSAPlugin events"
+  }
 }
 else {
   Write-Host "AKSGMSAPlugin events are not available"
